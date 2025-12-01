@@ -22,3 +22,8 @@ output "internet_gateway_id" {
   description = "ID of the Internet Gateway"
   value       = module.vpc.internet_gateway_id
 }
+
+output "private_route_table_id" {
+  description = "ID of the private route table"  
+  value       = module.vpc.private_route_table_id
+}

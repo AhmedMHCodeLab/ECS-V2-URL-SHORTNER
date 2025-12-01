@@ -8,3 +8,14 @@ module "vpc" {
   project_name         = var.project_name
   environment          = var.environment
 }
+
+module "vpc_endpoints" {
+  source = "../../modules/vpc-endpoints"
+
+  vpc_id                  = module.vpc.vpc_id
+  private_subnet_ids      = module.vpc.private_subnet_ids
+  private_route_table_ids = [module.vpc.private_route_table_id] 
+  vpc_cidr                = module.vpc.vpc_cidr_block
+  project_name            = var.project_name
+  region                  = var.aws_region
+}
