@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Project name for tagging"
   type        = string
-  default     = "ECS-v2-url-shortener"
+  default     = "ecs-v2-url-shortener"
 }
 
 variable "environment" {

@@ -29,8 +29,23 @@ module "iam" {
   aws_region            = var.aws_region
   github_repository_name = "AhmedMHCodeLab/ECS-V2-URL-SHORTNER" 
   
-  ecr_repository_arn    = "arn:aws:ecr:${var.aws_region}:${data.aws_caller_identity.current.account_id}:repository/${var.project_name}"
-  dynamodb_table_arn    = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.project_name}-urls"
+  ecr_repository_arn    = module.ecr.ecr_repository_arn
+  dynamodb_table_arn = module.dynamodb.table_arn
   dynamodb_table_name   = "${var.project_name}-urls"
   ecs_cluster_name      = "${var.project_name}-cluster"
 } 
+
+module "dynamodb" {
+  source = "../../modules/dynamodb"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
+
+module "ecr" {
+  source = "../../modules/ecr"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
+
