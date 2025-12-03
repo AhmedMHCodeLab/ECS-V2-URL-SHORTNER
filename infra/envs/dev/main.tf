@@ -59,3 +59,34 @@ module "alb" {
   public_subnet_ids  = module.vpc.public_subnet_ids
   vpc_cidr           = module.vpc.vpc_cidr_block
 }
+
+module "cloudwatch_logs" {
+  source = "../../modules/cloudwatch-logs"
+
+  project_name       = var.project_name
+  environment        = var.environment
+  retention_in_days  = 7  # Short retention for dev
+}
+
+module "ecs" {
+  source = "../../modules/ecs"
+
+  project_name           = var.project_name
+  environment            = var.environment
+  vpc_id                 = module.vpc.vpc_id
+  private_subnet_ids     = module.vpc.private_subnet_ids
+  alb_security_group_id  = module.alb.alb_security_group_id
+  target_group_arn       = module.alb.blue_target_group_arn
+  task_cpu               = 256
+  task_memory            = 512
+  container_name         = "url-shortener"
+  # TODO: Change to git commit SHA when GitHub Actions is configured
+  container_image        = "${module.ecr.ecr_repository_url}:latest"
+  container_port         = 8080
+  desired_count          = 1
+  execution_role_arn     = module.iam.execution_role_arn
+  task_role_arn          = module.iam.task_role_arn
+  dynamodb_table_name    = module.dynamodb.table_name
+  log_group_name         = module.cloudwatch_logs.log_group_name
+  aws_region             = var.aws_region
+}

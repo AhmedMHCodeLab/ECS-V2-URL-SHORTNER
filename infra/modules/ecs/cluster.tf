@@ -7,6 +7,9 @@ resource "aws_ecs_cluster" "main" {
   }
   
   tags = {
-    Name = "${var.project_name}-cluster"
+    Name        = "${var.project_name}-cluster"
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "Terraform"
   }
 }
