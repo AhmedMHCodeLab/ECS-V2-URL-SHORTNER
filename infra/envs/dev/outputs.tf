@@ -27,3 +27,18 @@ output "private_route_table_id" {
   description = "ID of the private route table"  
   value       = module.vpc.private_route_table_id
 }
+
+output "alb_dns_name" {
+  description = "DNS name of the Application Load Balancer"
+  value       = module.alb.alb_dns_name
+}
+
+output "blue_target_group_arn" {
+  description = "ARN of the blue target group"
+  value       = module.alb.blue_target_group_arn
+}
+
+output "green_target_group_arn" {
+  description = "ARN of the green target group"
+  value       = module.alb.green_target_group_arn
+}
