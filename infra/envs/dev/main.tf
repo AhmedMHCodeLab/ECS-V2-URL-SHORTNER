@@ -77,7 +77,7 @@ module "ecs" {
   vpc_id                 = module.vpc.vpc_id
   private_subnet_ids     = module.vpc.private_subnet_ids
   alb_security_group_id  = module.alb.alb_security_group_id
-  target_group_arn       = module.alb.blue_target_group_arn
+  target_group_arn = module.alb.blue_target_group_arn 
   task_cpu               = 256
   task_memory            = 512
   container_name         = "url-shortener"
