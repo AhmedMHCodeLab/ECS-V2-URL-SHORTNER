@@ -72,7 +72,7 @@ jobs:
       
       - name: Create AppSpec for CodeDeploy
         run: |
-          cat > appspec.json <<EOF
+          cat > appspec.json <<'EOF'
           {
             "version": 1,
             "Resources": [
@@ -80,9 +80,9 @@ jobs:
                 "TargetService": {
                   "Type": "AWS::ECS::Service",
                   "Properties": {
-                    "TaskDefinition": "${{ steps.register-task-def.outputs.task-def-arn }}",
+                    "TaskDefinition": "TASK_DEFINITION_PLACEHOLDER",
                     "LoadBalancerInfo": {
-                      "ContainerName": "${{ env.CONTAINER_NAME }}",
+                      "ContainerName": "CONTAINER_NAME_PLACEHOLDER",
                       "ContainerPort": 8080
                     }
                   }
@@ -91,20 +91,25 @@ jobs:
             ]
           }
           EOF
+          
+          # Replace placeholders
+          sed -i "s|TASK_DEFINITION_PLACEHOLDER|${{ steps.register-task-def.outputs.task-def-arn }}|g" appspec.json
+          sed -i "s|CONTAINER_NAME_PLACEHOLDER|${{ env.CONTAINER_NAME }}|g" appspec.json
       
       - name: Deploy to ECS via CodeDeploy
         id: deploy
         run: |
+          APPSPEC_CONTENT=$(cat appspec.json | jq -c .)
+          
           DEPLOYMENT_ID=$(aws deploy create-deployment \
             --application-name $CODEDEPLOY_APP \
             --deployment-group-name $CODEDEPLOY_GROUP \
-            --revision "{\"revisionType\":\"AppSpecContent\",\"appSpecContent\":{\"content\":\"$(cat appspec.json | jq -c .)\"}}" \
+            --revision revisionType=AppSpecContent,appSpecContent="{content='$APPSPEC_CONTENT'}" \
             --region $AWS_REGION \
             --query 'deploymentId' \
             --output text)
           echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
           echo "Deployment started: $DEPLOYMENT_ID"
-      
       - name: Wait for deployment to complete
         run: |
           echo "Monitoring deployment: ${{ steps.deploy.outputs.deployment-id }}"
