@@ -263,7 +263,8 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
         Action = [
           "codedeploy:CreateDeployment",
           "codedeploy:GetDeployment",
-          "codedeploy:GetDeploymentConfig"
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:RegisterApplicationRevision"
         ]
         Resource = "*"
       }
