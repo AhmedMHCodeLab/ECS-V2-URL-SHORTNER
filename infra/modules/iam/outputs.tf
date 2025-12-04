@@ -17,3 +17,8 @@ output "github_oidc_terraform_role_arn" {
   description = "ARN of the IAM Role for GitHub OIDC Terraform Deployment"
   value       = aws_iam_role.github_oidc_terraform_role.arn
 }
+
+output "codedeploy_role_arn" {
+  value       = aws_iam_role.codedeploy.arn
+  description = "ARN of CodeDeploy IAM role"
+}

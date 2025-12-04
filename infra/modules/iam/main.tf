@@ -271,3 +271,32 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
   })
 }
 
+# CodeDeploy IAM Role
+
+resource "aws_iam_role" "codedeploy" {
+  name = "${var.project_name}-codedeploy-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "codedeploy.amazonaws.com"
+      }
+    }]
+  })
+
+  tags = {
+    Name        = "${var.project_name}-codedeploy-role"
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
+}
+
+# Attach AWS managed policy for CodeDeploy ECS permissions
+resource "aws_iam_role_policy_attachment" "codedeploy" {
+  role       = aws_iam_role.codedeploy.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
+}

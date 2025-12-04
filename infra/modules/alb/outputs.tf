@@ -27,3 +27,13 @@ output "listener_arn" {
   description = "ARN of the HTTP listener"
   value       = aws_lb_listener.http.arn
 }
+
+output "blue_target_group_name" {
+  value       = aws_lb_target_group.blue.name
+  description = "Name of the blue target group"
+}
+
+output "green_target_group_name" {
+  value       = aws_lb_target_group.green.name
+  description = "Name of the green target group"
+}

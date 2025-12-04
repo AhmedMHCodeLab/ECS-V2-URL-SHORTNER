@@ -26,6 +26,7 @@ module "iam" {
   source = "../../modules/iam"
   
   project_name           = var.project_name
+  environment            = var.environment
   aws_region            = var.aws_region
   github_repository_name = "AhmedMHCodeLab/ECS-V2-URL-SHORTNER" 
   
@@ -89,4 +90,18 @@ module "ecs" {
   dynamodb_table_name    = module.dynamodb.table_name
   log_group_name         = module.cloudwatch_logs.log_group_name
   aws_region             = var.aws_region
+}
+
+# 10. CodeDeploy (depends on IAM, ECS, ALB)
+module "codedeploy" {
+  source = "../../modules/codedeploy"
+
+  project_name            = var.project_name
+  environment             = var.environment
+  ecs_cluster_name        = module.ecs.cluster_name
+  ecs_service_name        = module.ecs.service_name
+  blue_target_group_name  = module.alb.blue_target_group_name
+  green_target_group_name = module.alb.green_target_group_name
+  alb_listener_arn        = module.alb.listener_arn
+  codedeploy_role_arn     = module.iam.codedeploy_role_arn
 }

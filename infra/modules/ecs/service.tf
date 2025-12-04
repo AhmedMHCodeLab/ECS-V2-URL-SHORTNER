@@ -5,6 +5,10 @@ resource "aws_ecs_service" "app" {
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
+
   network_configuration {
     subnets          = var.private_subnet_ids
     security_groups  = [aws_security_group.ecs_task.id]
@@ -17,24 +21,10 @@ resource "aws_ecs_service" "app" {
     container_port   = var.container_port
   }
 
-  # Deployment configuration - top-level attributes
-  deployment_maximum_percent         = 200
-  deployment_minimum_healthy_percent = 100
-
-  # Circuit breaker for automatic rollback
-  deployment_circuit_breaker {
-    enable   = true
-    rollback = true
-  }
-
-  # Health check grace period
   health_check_grace_period_seconds = 60
 
-  # Ignore changes to desired_count and task_definition
-  # desired_count: managed by auto-scaling
-  # task_definition: managed by CodeDeploy (will add later)
   lifecycle {
-    ignore_changes = [desired_count, task_definition]
+    ignore_changes = [desired_count, task_definition, load_balancer]
   }
 
   tags = {
