@@ -42,3 +42,13 @@ output "green_target_group_arn" {
   description = "ARN of the green target group"
   value       = module.alb.green_target_group_arn
 }
+
+output "waf_web_acl_arn" {
+  description = "ARN of the WAF Web ACL"
+  value       = module.waf.web_acl_arn
+}
+
+output "waf_web_acl_name" {
+  description = "Name of the WAF Web ACL"
+  value       = module.waf.web_acl_name
+}

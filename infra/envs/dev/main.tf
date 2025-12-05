@@ -105,3 +105,12 @@ module "codedeploy" {
   alb_listener_arn        = module.alb.listener_arn
   codedeploy_role_arn     = module.iam.codedeploy_role_arn
 }
+
+# WAF (depends on ALB)
+module "waf" {
+  source = "../../modules/waf"
+
+  project_name = var.project_name
+  environment  = var.environment
+  alb_arn      = module.alb.alb_arn
+}
