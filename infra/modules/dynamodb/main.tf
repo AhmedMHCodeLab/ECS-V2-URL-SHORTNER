@@ -8,6 +8,10 @@ resource "aws_dynamodb_table" "urls" {
     type = "S"
   }
 
+  point_in_time_recovery {
+    enabled = true
+  }
+
   tags = {
     Name        = "${var.project_name}-urls-table"
     Project     = var.project_name
