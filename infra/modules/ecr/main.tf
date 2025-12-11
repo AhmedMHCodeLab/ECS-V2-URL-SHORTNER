@@ -1,9 +1,9 @@
 resource "aws_ecr_repository" "repository" {
-  name = "${var.project_name}-repository"
+  name = "${var.project_name}-repository-${var.environment}"
   image_tag_mutability = "MUTABLE"
-  force_delete = true 
+  force_delete = true
 
-  encryption_configuration { 
+  encryption_configuration {
     encryption_type = "AES256"
   }
   image_scanning_configuration {
@@ -11,7 +11,7 @@ resource "aws_ecr_repository" "repository" {
   }
 
   tags = {
-    Name        = "${var.project_name}-repository"
+    Name        = "${var.project_name}-repository-${var.environment}"
     Project     = var.project_name
     Environment = var.environment
     ManagedBy   = "Terraform"
