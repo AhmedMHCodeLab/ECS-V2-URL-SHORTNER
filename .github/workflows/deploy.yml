@@ -62,7 +62,6 @@ jobs:
       - name: Build Docker image
         id: build-image
         run: |
-          # FIXED: Reverted tag back to just SHA for simplicity and ECR lifecycle clarity
           IMAGE="${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
           docker build -t $IMAGE ./app
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
@@ -125,7 +124,6 @@ jobs:
                     "TaskDefinition": "TASK_DEFINITION_PLACEHOLDER",
                     "LoadBalancerInfo": {
                       "ContainerName": "CONTAINER_NAME_PLACEHOLDER",
-                      # CRITICAL FIX 2: Removed JSON comment which would break parsing
                       "ContainerPort": CONTAINER_PORT_PLACEHOLDER
                     }
                   }
